@@ -21,11 +21,15 @@ class Game:
         game_folder = path.dirname(__file__)
 
     def new(self):
-        # initialize all variables and do all the se    tup for a new game
+        # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
         self.all_fairy = pg.sprite.Group()
+        self.player_projectiles = pg.sprite.Group()
+        self.ennemies_projectiles = pg.sprite.Group()
+
         self.player = player.Player(self, pg.Surface.get_width(self.game_space)//1 , HEIGHT//1.25)
-        self.testo = fairy.Fairy(self,  pg.Surface.get_width(self.game_space)//1 , HEIGHT//1.50)
+        self.testo = fairy.Fairy(self, 600, 50)
+
         self.all_sprites.add(self.testo)
         self.all_fairy.add(self.testo)
 
@@ -45,9 +49,18 @@ class Game:
     def update(self):
         # update portion of the game loop
         self.all_sprites.update()
-        hits = pg.sprite.spritecollide(self.player, self.all_fairy, True)
-        if hits:
-            print("szr")
+        # Vérifie les collisions entre les projectiles et les ennemis
+        for projectile in self.player_projectiles:
+            fairy_hit = pg.sprite.spritecollide(projectile, self.all_fairy, False) # Collisions avec les ennemis
+            for fairy in fairy_hit:
+                fairy.take_domage(projectile.domage)
+                projectile.kill() 
+        for projectile in self.ennemies_projectiles:
+            if self.player.rect.colliderect(projectile.rect):  # Utilisation de colliderect pour un seul joueur
+                self.player.take_domage(projectile.domage)
+                projectile.kill()
+
+
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.screen.blit(self.game_space,(POS_GAME_X_BEGAN,HEIGHT*0))
