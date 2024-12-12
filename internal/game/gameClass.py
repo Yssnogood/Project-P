@@ -5,7 +5,7 @@ from os import path
 from internal.entities.player import player
 from internal.entities.ennemies import fairy
 from internal.game.settings import *
-from internal.triggers.triggerFairiesSpawn import *
+from internal.ochestrator.orchestrator import *
 
 class Game:
     def __init__(self):
@@ -19,7 +19,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
 
-        self.trigger = FairiesSpawn(self)
+        self.orchestrator = Orchestrator(self)
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -28,19 +28,15 @@ class Game:
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
         self.all_fairy = pg.sprite.Group()
+        self.all_bosses = pg.sprite.Group()
         self.player_projectiles = pg.sprite.Group()
         self.ennemies_projectiles = pg.sprite.Group()
 
         self.player = player.Player(self, pg.Surface.get_width(self.game_space)//1 , HEIGHT//1.25)
-        self.testo = fairy.Fairy(self, 600, 200, "circle")
 
-        self.all_sprites.add(self.testo)
-        self.all_fairy.add(self.testo)
+        self.orchestrator.firstFairies()
+        #self.orchestrator.spawnBoss()
 
-        self.trigger.spawnFairies(3)
-        self.trigger.spawnFairiesLine(5)
-        self.trigger.spawnFairiesColumn(3, POS_GAME_X_BEGAN + 30)
-        self.trigger.spawnFairiesColumn(3, POS_GAME_X_END - 80)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -58,17 +54,26 @@ class Game:
     def update(self):
         # update portion of the game loop
         self.all_sprites.update()
+        self.collision()
+        self.orchestrator.fairiesFirstWave()
+
+
+    def collision(self):
         # Vérifie les collisions entre les projectiles et les ennemis
         for projectile in self.player_projectiles:
+            boss_hit = pg.sprite.spritecollide(projectile, self.all_bosses, False)
+            for boss in boss_hit:
+                boss.take_damage(projectile.damage)
+                projectile.kill()
             fairy_hit = pg.sprite.spritecollide(projectile, self.all_fairy, False) # Collisions avec les ennemis
             for fairy in fairy_hit:
-                fairy.take_domage(projectile.domage)
+                fairy.take_damage(projectile.damage)
                 projectile.kill() 
         for projectile in self.ennemies_projectiles:
             if self.player.rect.colliderect(projectile.rect):  # Utilisation de colliderect pour un seul joueur
-                self.player.take_domage(projectile.domage)
+                self.player.take_damage(projectile.damage)
                 projectile.kill()
-
+        
 
     def draw(self):
         self.screen.fill(BGCOLOR)

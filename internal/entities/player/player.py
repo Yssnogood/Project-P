@@ -9,7 +9,7 @@ class Player(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((15, 25))
+        self.image = pg.Surface((10, 15))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
@@ -35,6 +35,9 @@ class Player(pg.sprite.Sprite):
         if self.vel.x != 0 and self.vel.y != 0:
             self.vel *= 0.7071
 
+        if keys[pg.K_LSHIFT]:
+            self.vel *= 0.5
+
         if keys[pg.K_a]:
             now = pg.time.get_ticks()
             if self.bombCounter >0 and now - self.last_bomb > 400 :
@@ -43,10 +46,10 @@ class Player(pg.sprite.Sprite):
                 self.bombCounter -= 1
     
         if keys[pg.K_SPACE] :
-            #self.shoot()
-            self.shoot_triangle()
+            self.shoot()
+            #self.shoot_triangle()
 
-    def take_domage(self, amount):
+    def take_damage(self, amount):
         self.health -= amount
         print("New player hp : ", self.health)
         for projectile in self.game.ennemies_projectiles:
@@ -57,7 +60,7 @@ class Player(pg.sprite.Sprite):
 
     def shoot(self):
         now = pg.time.get_ticks()
-        if now - self.last_shot > 150:
+        if now - self.last_shot > 250:
             self.last_shot = now
             proj = Projectile(self.game, self.rect.centerx, self.rect.top, "player")
             self.game.player_projectiles.add(proj)
@@ -78,7 +81,7 @@ class Player(pg.sprite.Sprite):
     def bomb(self):
         print("Bomb was trigger")
         for fairy in self.game.all_fairy:
-            fairy.take_domage(15)
+            fairy.take_damage(6)
         for projectile in self.game.ennemies_projectiles:
             projectile.kill()
 

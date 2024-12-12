@@ -5,7 +5,7 @@ vec = pg.math.Vector2
 
 
 class Projectile(pg.sprite.Sprite):
-    def __init__(self, game, x, y, owner, domage=10, angle=0):
+    def __init__(self, game, x, y, owner, damage=10, angle=0):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -19,7 +19,7 @@ class Projectile(pg.sprite.Sprite):
 
         self.owner = owner
 
-        self.domage = domage
+        self.damage = damage
 
     def update(self):
         self.pos += self.vel * self.game.dt 
@@ -27,5 +27,5 @@ class Projectile(pg.sprite.Sprite):
         self.rect.center = self.pos
 
         # Supprime le projectile s'il sort de l'écran
-        if self.rect.top < 0 or self.rect.bottom > HEIGHT or self.rect.right > POS_GAME_X_END or self.rect.left < 0:
+        if self.rect.top < 0 or self.rect.bottom > HEIGHT or self.rect.right > POS_GAME_X_END or self.rect.left < POS_GAME_X_BEGAN:
             self.kill()
