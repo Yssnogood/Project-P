@@ -1,6 +1,6 @@
 import pygame as pg
 from internal.game.settings import *
-from internal.entities.ennemiesProjectile import *
+from internal.entities.ennemies.ennemiesProjectile import *
 import math
 
 vec = pg.math.Vector2
@@ -10,7 +10,7 @@ class Fairy(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.all_fairy
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((50, 50), pg.SRCALPHA)
+        self.image = pg.Surface((FAIRY_SIZE, FAIRY_SIZE), pg.SRCALPHA)
         pg.draw.circle(self.image, (0, 255, 0), (25, 25), 25)
         self.rect = self.image.get_rect()
 
@@ -60,7 +60,13 @@ class Fairy(pg.sprite.Sprite):
         self.pos.y = math.sin(self.pos.x / 20) * 20  # Oscillation en y
 
     def move_linear(self):
-        self.pos += self.direction * self.speed * self.game.dt
+        if self.pos.x > POS_GAME_X_END - self.rect.width:
+            self.speed *= -1
+        if self.pos.x < POS_GAME_X_BEGAN:
+            self.speed *= -1
+        
+        self.pos.x += self.speed *self.game.dt * 50
+
 
     def move_stationary(self):
         pass

@@ -16,7 +16,7 @@ class EnemyProjectile(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.vel = direction * 100  # Direction normalisée * vitesse
 
-        self.domage = 5
+        self.domage = 1
 
     def update(self):
         
@@ -24,5 +24,5 @@ class EnemyProjectile(pg.sprite.Sprite):
         self.rect.center = self.pos
 
         # Si le projectile sort de l'écran, on le supprime
-        if self.rect.bottom < 0 or self.rect.top > HEIGHT or self.rect.right < POS_GAME_X_BEGAN or self.rect.left > POS_GAME_X_END:
+        if self.rect.top < 0 or self.rect.bottom > HEIGHT or self.rect.left <= POS_GAME_X_BEGAN or self.rect.right >= POS_GAME_X_END:
             self.kill()

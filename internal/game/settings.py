@@ -18,6 +18,10 @@ RED = (255,0,0)
 YELLOW = (255,255,0)
 BGCOLOR = (255,255,255)
 
+FAIRY_PATERN = ["linear", "zigzag","circular", "stationary"]
+FAIRY_SIZE = 50
+
+
 PROJECTILE_SPEED = 600
 
 PLAYER_SPEED = 400
