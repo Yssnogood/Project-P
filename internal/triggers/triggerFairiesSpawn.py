@@ -5,18 +5,18 @@ class FairiesSpawn:
     def __init__(self, game):
         self.game = game
 
-    def spawnFairy(self, x ,y, patern=FAIRY_PATERN[-1],speed=10, radius=200, shoot_patern="linear",pattern_params=None):
-        self.fairy = Fairy(self.game, x, y,patern,speed,radius,shoot_patern, pattern_params)
+    def spawnFairy(self, x ,y, patern=FAIRY_PATERN[-1],speed=10, radius=200, shoot_patern="linear",pattern_params=None, color = BLUE):
+        self.fairy = Fairy(self.game, x, y,patern,speed,radius,shoot_patern, pattern_params, color)
         self.game.all_sprites.add(self.fairy)
         self.game.all_fairy.add(self.fairy)
 
-    def spawnFairies(self, amount):
+    def spawnFairies(self, amount, color=BLUE):
         for i in range(amount):
-            self.fairy = Fairy(self.game, random.randint(POS_GAME_X_BEGAN,POS_GAME_X_END - 60), random.randint(50,300), FAIRY_PATERN[0], -5)
+            self.fairy = Fairy(self.game, random.randint(POS_GAME_X_BEGAN,POS_GAME_X_END - 60), random.randint(50,300), FAIRY_PATERN[0],10, 200,"linear",None, color)
             self.game.all_sprites.add(self.fairy)
             self.game.all_fairy.add(self.fairy)
 
-    def spawnFairiesLine(self, amount, startSpawnX=POS_GAME_X_BEGAN, startSpawnY=0, patern=FAIRY_PATERN[-1]):
+    def spawnFairiesLine(self, amount, startSpawnX=POS_GAME_X_BEGAN, startSpawnY=0, patern=FAIRY_PATERN[-1], color=BLUE):
 
         if startSpawnX <POS_GAME_X_BEGAN or startSpawnX > POS_GAME_X_END:
             startSpawnX = POS_GAME_X_BEGAN + FAIRY_SIZE
@@ -27,12 +27,12 @@ class FairiesSpawn:
             startSpawnY =  random.randint(50,300)
 
         for i in range(amount):
-            self.fairy = Fairy(self.game, startSpawnX, startSpawnY, patern, -5)
+            self.fairy = Fairy(self.game, startSpawnX, startSpawnY, patern, 5, 200,"linear",None, color)
             self.game.all_sprites.add(self.fairy)
             self.game.all_fairy.add(self.fairy)
             startSpawnX = startSpawnX + FAIRY_SIZE + 45 
 
-    def spawnFairiesColumn(self, amount, startSpawnX=0, startSpawnY=30, patern=FAIRY_PATERN[-1], shoot_patern="linear"):
+    def spawnFairiesColumn(self, amount, startSpawnX=0, startSpawnY=30, patern=FAIRY_PATERN[-1],  color=BLUE):
 
         if startSpawnY < 30 or startSpawnY > HEIGHT//2:
             startSpawnY = 10 + FAIRY_SIZE
@@ -41,7 +41,7 @@ class FairiesSpawn:
             startSpawnX = random.randint(POS_GAME_X_BEGAN,POS_GAME_X_END)
             
         for i in range(amount):
-            self.fairy = Fairy(self.game, startSpawnX, startSpawnY, patern, 10,200,shoot_patern)
+            self.fairy = Fairy(self.game, startSpawnX, startSpawnY, patern, 10, 200,"linear",None, color)
             self.game.all_sprites.add(self.fairy)
             self.game.all_fairy.add(self.fairy)
             startSpawnY = startSpawnY + FAIRY_SIZE + 50 

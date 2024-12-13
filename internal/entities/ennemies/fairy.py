@@ -6,14 +6,15 @@ import math
 vec = pg.math.Vector2
 
 class Fairy(pg.sprite.Sprite):
-    def __init__(self, game, x, y, pattern="zigzag", speed=10, radius=200, shoot_pattern="linear", pattern_params=None):
+    def __init__(self, game, x, y, pattern="zigzag", speed=10, radius=200, shoot_pattern="linear",  pattern_params=None,color=(0,255,0)):
         self.groups = game.all_sprites, game.all_fairy
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         
         # Create and center the image
         self.image = pg.Surface((FAIRY_SIZE, FAIRY_SIZE), pg.SRCALPHA)
-        pg.draw.circle(self.image, (0, 255, 0), (FAIRY_SIZE // 2, FAIRY_SIZE // 2), FAIRY_SIZE // 2)
+        self.color = color
+        pg.draw.circle(self.image, self.color, (FAIRY_SIZE // 2, FAIRY_SIZE // 2), FAIRY_SIZE // 2)
         self.rect = self.image.get_rect(center=(x, y))
 
         # Initialize movement and shooting variables
@@ -28,7 +29,7 @@ class Fairy(pg.sprite.Sprite):
         self.shoot_delay = 500
         self.shoot_pattern = shoot_pattern
 
-        self.health = 50
+        self.health = 30
 
         # Movement patterns
         self.pattern = pattern

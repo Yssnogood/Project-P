@@ -12,7 +12,7 @@ class EnemyMegaProjectile(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
 
-        self.health = 150
+        self.health = 100
 
         # Create projectile image
         self.radius = 20

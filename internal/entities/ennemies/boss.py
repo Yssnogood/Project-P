@@ -15,7 +15,7 @@ class Boss(pg.sprite.Sprite):
         # Appearance
         self.image = pg.Surface((75, 50))  # Large boss sprite
         #pg.draw.ellipse(self.image, YELLOW, (0, 0, 100, 150))
-        self.image.fill(YELLOW)
+        self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y) 
 
@@ -33,9 +33,16 @@ class Boss(pg.sprite.Sprite):
 
         # Phases
         self.current_phase = "first"
+
+        self.phase = {
+            "first":True,
+            "second":False,
+            "third":False
+        }
+
         self.phase_health_thresholds = {
-            "second": 200,
-            "third": 100
+            "second": 300,
+            "third": 130
         }
 
     def first_phase(self):
@@ -88,10 +95,25 @@ class Boss(pg.sprite.Sprite):
     def change_phase(self):
         if self.current_phase == "first" and self.health <= self.phase_health_thresholds["second"]:
             self.current_phase = "second"
+            self.phase["second"] = True
+            self.image.fill(YELLOW)
             print("Boss enters second phase!")
         elif self.current_phase == "second" and self.health <= self.phase_health_thresholds["third"]:
             self.current_phase = "third"
+            self.phase["third"] = True
+            self.image.fill(ORANGE)
             print("Boss enters third phase!")
+    
+    def boss_fight(self):
+        if self.current_phase == "first" and self.phase["first"]:
+            self.phase["first"] = False
+            self.first_phase()
+        elif self.current_phase == "second" and self.phase["second"]:
+            self.phase["second"] = False
+            self.second_phase()
+        elif self.current_phase == "third" and self.phase["third"]:
+            self.phase["third"] = False
+            self.third_phase()
 
     def shoot_megaProjectile(self, x=POS_GAME_X_BEGAN + 20, y = 120, shoot_patern="star"):
         angle = 2 * math.pi
@@ -142,5 +164,6 @@ class Boss(pg.sprite.Sprite):
 
     def update(self):
         self.change_phase()
+        self.boss_fight()
         self.move()
         self.shoot()

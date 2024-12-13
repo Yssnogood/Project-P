@@ -14,8 +14,13 @@ FPS = 60
 
 BLACK = (0,0,0)
 BLUE =(0,0,255)
+LIGHTSKYBLUE = (135,206,250)
 RED = (255,0,0)
+GREEN = (0,255,0)
 YELLOW = (255,255,0)
+ORANGE = (255,100,0)
+PURPLE = (128,0,128)
+ROSYBROWN = (188,143,143)
 BGCOLOR = (255,255,255)
 
 FAIRY_PATERN = ["linear", "zigzag","circular", "stationary"]

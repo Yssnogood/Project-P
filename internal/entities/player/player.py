@@ -19,7 +19,7 @@ class Player(pg.sprite.Sprite):
         self.last_bomb = 0
 
         self.health = 5
-        self.bombCounter = 3
+        self.bombCounter = 5
         
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -46,7 +46,7 @@ class Player(pg.sprite.Sprite):
                 self.bombCounter -= 1
     
         if keys[pg.K_SPACE] :
-            #self.shoot()
+            self.shoot()
             self.shoot_triangle()
 
     def take_damage(self, amount):

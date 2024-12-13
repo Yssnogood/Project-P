@@ -35,8 +35,8 @@ class Game:
 
         self.player = player.Player(self, pg.Surface.get_width(self.game_space)//1 , HEIGHT//1.25)
 
-        #self.orchestrator.firstFairies()
-        self.orchestrator.spawnBoss()
+        self.orchestrator.firstFairies()
+        #self.orchestrator.spawnBoss()
 
 
 
@@ -57,7 +57,7 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.collision()
-        #self.orchestrator.fairiesFirstWave()
+        self.orchestrator.fairiesFirstWave()
 
 
     def collision(self):
