@@ -46,8 +46,8 @@ class Player(pg.sprite.Sprite):
                 self.bombCounter -= 1
     
         if keys[pg.K_SPACE] :
-            self.shoot()
-            #self.shoot_triangle()
+            #self.shoot()
+            self.shoot_triangle()
 
     def take_damage(self, amount):
         self.health -= amount

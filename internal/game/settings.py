@@ -5,7 +5,7 @@ HEIGHT = 720
 
 # gere les dimensions de la zone de jeu ( largeur / DIM_WIDTH )
 POS_GAME_X_BEGAN = WIDTH//4
-POS_GAME_X_END = POS_GAME_X_BEGAN + WIDTH//2
+POS_GAME_X_END = POS_GAME_X_BEGAN + WIDTH//2 
 
 POP_PLAYER = POS_GAME_X_END // 2
 

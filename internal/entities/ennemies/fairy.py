@@ -28,7 +28,7 @@ class Fairy(pg.sprite.Sprite):
         self.shoot_delay = 500
         self.shoot_pattern = shoot_pattern
 
-        self.health = 30
+        self.health = 50
 
         # Movement patterns
         self.pattern = pattern
@@ -110,7 +110,9 @@ class Fairy(pg.sprite.Sprite):
         move_function()
 
         # Synchronize the rect's position
-        self.rect.center = self.pos
+        
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
         # Call the appropriate shooting pattern
         shoot_function = self.shoot_patterns.get(self.shoot_pattern, self.shoot)

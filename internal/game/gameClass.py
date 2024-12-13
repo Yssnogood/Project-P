@@ -31,11 +31,13 @@ class Game:
         self.all_bosses = pg.sprite.Group()
         self.player_projectiles = pg.sprite.Group()
         self.ennemies_projectiles = pg.sprite.Group()
+        self.ennemies_mega_projectiles = pg.sprite.Group()
 
         self.player = player.Player(self, pg.Surface.get_width(self.game_space)//1 , HEIGHT//1.25)
 
-        self.orchestrator.firstFairies()
-        #self.orchestrator.spawnBoss()
+        #self.orchestrator.firstFairies()
+        self.orchestrator.spawnBoss()
+
 
 
     def run(self):
@@ -55,7 +57,7 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.collision()
-        self.orchestrator.fairiesFirstWave()
+        #self.orchestrator.fairiesFirstWave()
 
 
     def collision(self):
@@ -69,6 +71,13 @@ class Game:
             for fairy in fairy_hit:
                 fairy.take_damage(projectile.damage)
                 projectile.kill() 
+            
+            mega_project_hit = pg.sprite.spritecollide(projectile,self.ennemies_mega_projectiles, False)
+            for mega in mega_project_hit:
+                mega.take_damage(projectile.damage)
+                projectile.kill()
+        
+
         for projectile in self.ennemies_projectiles:
             if self.player.rect.colliderect(projectile.rect):  # Utilisation de colliderect pour un seul joueur
                 self.player.take_damage(projectile.damage)

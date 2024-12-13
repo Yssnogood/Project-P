@@ -17,8 +17,7 @@ class Orchestrator:
 
     def spawnBoss(self):
         self.boss = Boss(self.game, WIDTH//2, 100)
-        
-
+        #self.boss.second_phase()
 
     def firstFairies(self):
         self.fairies.spawnFairy(POS_GAME_X_BEGAN + 30, 70,FAIRY_PATERN[-1],10,200,"circle")

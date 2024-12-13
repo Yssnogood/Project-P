@@ -1,6 +1,7 @@
 import pygame as pg
 import math
 from internal.entities.ennemies.ennemiesProjectile import *
+from internal.entities.ennemies.megaEnnemiesProjectile import *
 from internal.game.settings import *
 
 vec = pg.math.Vector2
@@ -12,21 +13,22 @@ class Boss(pg.sprite.Sprite):
         self.game = game
 
         # Appearance
-        self.image = pg.Surface((50, 75), pg.SRCALPHA)  # Large boss sprite
-        pg.draw.ellipse(self.image, YELLOW, (0, 0, 100, 150))
+        self.image = pg.Surface((75, 50))  # Large boss sprite
+        #pg.draw.ellipse(self.image, YELLOW, (0, 0, 100, 150))
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y) 
 
         # Position and movement
         self.pos = vec(x, y)
         self.vel = vec(0, 0)
-        self.speed = 2
+        self.speed = 5
 
         # Stats
-        self.health = 300
+        self.health = 500
 
         # Attack patterns
-        self.attack_delay = 2000  # Milliseconds between attacks
+        self.attack_delay = 500  # Milliseconds between attacks
         self.last_attack_time = 0
 
         # Phases
@@ -36,10 +38,51 @@ class Boss(pg.sprite.Sprite):
             "third": 100
         }
 
+    def first_phase(self):
+
+        self.shoot_megaProjectile()
+        self.shoot_megaProjectile(POS_GAME_X_END-60)
+
+        self.shoot_megaProjectile(POS_GAME_X_BEGAN + 20, HEIGHT // 3)
+        self.shoot_megaProjectile(POS_GAME_X_END - 60, HEIGHT // 3)
+        
+        
+        self.shoot_megaProjectile(WIDTH//2 -30, HEIGHT // 4, "linear")
+        self.shoot_megaProjectile(WIDTH//2 +30, HEIGHT // 4, "linear")
+
+    def second_phase(self):
+        for project in self.game.ennemies_mega_projectiles:
+            project.kill()
+        for project in self.game.ennemies_projectiles:
+            project.kill()
+
+        self.shoot_megaProjectile(POS_GAME_X_BEGAN + 20, HEIGHT // 4, "linear")
+        self.shoot_megaProjectile(POS_GAME_X_END - 60, HEIGHT // 4, "linear")
+
+        self.shoot_megaProjectile(POS_GAME_X_BEGAN + 40, HEIGHT // 4 + 50, "circle")
+        self.shoot_megaProjectile(POS_GAME_X_END - 80, HEIGHT // 4+ 50, "circle")
+
+        self.shoot_megaProjectile(WIDTH//2 -50, HEIGHT // 5, "star")
+        self.shoot_megaProjectile(WIDTH//2 +50, HEIGHT // 5, "star")
+
+    def third_phase(self):
+        for project in self.game.ennemies_mega_projectiles:
+            project.kill()
+        for project in self.game.ennemies_projectiles:
+            project.kill()
+            
+        self.shoot_megaProjectile(WIDTH//2 -30, HEIGHT // 4, "linear")
+        self.shoot_megaProjectile(WIDTH//2 +30, HEIGHT // 4, "linear")
+        
+
     def take_damage(self, amount):
         self.health -= amount
         if self.health <= 0:
             self.kill()
+            for project in self.game.ennemies_mega_projectiles:
+                project.kill()
+            for project in self.game.ennemies_projectiles:
+                project.kill()
             print("Boss defeated!")
 
     def change_phase(self):
@@ -50,7 +93,13 @@ class Boss(pg.sprite.Sprite):
             self.current_phase = "third"
             print("Boss enters third phase!")
 
-    def shoot_circle(self, num_projectiles=12):
+    def shoot_megaProjectile(self, x=POS_GAME_X_BEGAN + 20, y = 120, shoot_patern="star"):
+        angle = 2 * math.pi
+        direction = vec(math.cos(angle), math.sin(angle))
+        EnemyMegaProjectile(self.game, self.pos.x, self.pos.y, direction, x, y, shoot_patern )
+
+
+    def shoot(self, num_projectiles=12):
         """Shoots projectiles in a circle."""
         angle_step = 2 * math.pi / num_projectiles
         now = pg.time.get_ticks()
@@ -60,15 +109,38 @@ class Boss(pg.sprite.Sprite):
                 angle = i * angle_step
                 direction = vec(math.cos(angle), math.sin(angle))
                 EnemyProjectile(self.game, self.rect.centerx, self.rect.centery, direction)
+            if self.current_phase == "second" or self.current_phase == "third":
+                player_pos = vec(self.game.player.rect.center)
+                direction = (player_pos - self.pos).normalize()
+
+                EnemyProjectile(self.game, self.rect.left, self.rect.y, direction)
+                EnemyProjectile(self.game, self.rect.right-10, self.rect.y, direction)
+            if self.current_phase == "third":
+                num_branches=9
+                spread_angle=0.2
+                angle_step = 2 * math.pi / num_branches
+                for i in range(num_branches):
+                    base_angle = i * angle_step
+                    # Two projectiles per branch, slightly diverging
+                    angle1 = base_angle - spread_angle / 2
+                    angle2 = base_angle + spread_angle / 2
+                    direction1 = vec(math.cos(angle1), math.sin(angle1))
+                    direction2 = vec(math.cos(angle2), math.sin(angle2))
+                    # Create the two projectiles
+                    EnemyProjectile(self.game, self.rect.centerx, self.rect.centery, direction1)
+                    EnemyProjectile(self.game, self.rect.centerx, self.rect.centery, direction2)
 
     def move(self):
         """Simple back-and-forth movement."""
-        if self.rect.right >= POS_GAME_X_END -50 or self.rect.left <= POS_GAME_X_BEGAN:
-            self.vel.x *= -1
-        self.pos += self.vel * self.speed + (0.5,0)
+        if self.pos.x > POS_GAME_X_END - self.rect.width or self.pos.x < POS_GAME_X_BEGAN:
+            self.speed *= -1
+        self.pos.x +=  self.speed * self.game.dt * 50
 
         # Update position on screen
-        self.rect.center = self.pos
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
     def update(self):
+        self.change_phase()
         self.move()
+        self.shoot()
