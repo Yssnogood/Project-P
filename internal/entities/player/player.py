@@ -1,6 +1,7 @@
 import pygame as pg
 from internal.game.settings import *
 from internal.entities.player.projectile import *
+from internal.UI.pointsBar import *
 
 vec = pg.math.Vector2
 
@@ -19,7 +20,12 @@ class Player(pg.sprite.Sprite):
         self.last_bomb = 0
 
         self.health = 5
-        self.bombCounter = 5
+        self.max_health = 5
+
+        self.bombCounter = 4
+        self.maxBom = 5
+
+        self.bars = PointsBar(game, self, POS_GAME_X_END + 30,50)
         
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -100,3 +106,5 @@ class Player(pg.sprite.Sprite):
 
         self.rect.x = self.pos.x
         self.rect.y = self.pos.y
+
+        

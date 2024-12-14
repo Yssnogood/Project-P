@@ -89,6 +89,7 @@ class Game:
         self.screen.blit(self.game_space,(POS_GAME_X_BEGAN,HEIGHT*0))
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image,sprite.pos)
+        self.player.bars.draw()
         pg.display.flip()
 
     def events(self):
