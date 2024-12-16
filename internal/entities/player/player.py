@@ -22,7 +22,7 @@ class Player(pg.sprite.Sprite):
         self.health = 5
         self.max_health = 5
 
-        self.bombCounter = 4
+        self.bombCounter = 5
         self.maxBom = 5
 
         self.bars = PointsBar(game, self, POS_GAME_X_END + 30,50)
@@ -56,10 +56,11 @@ class Player(pg.sprite.Sprite):
             self.shoot_triangle()
 
     def take_damage(self, amount):
-        self.health -= amount
         print("New player hp : ", self.health)
         for projectile in self.game.ennemies_projectiles:
             projectile.kill()
+        self.health -= amount
+        self.bombCounter = 5
         if self.health <=0:
             self.kill()
             print("Player has been slayed")
@@ -87,7 +88,7 @@ class Player(pg.sprite.Sprite):
     def bomb(self):
         print("Bomb was trigger")
         for fairy in self.game.all_fairy:
-            fairy.take_damage(6)
+            fairy.take_damage(10)
         for projectile in self.game.ennemies_projectiles:
             projectile.kill()
 

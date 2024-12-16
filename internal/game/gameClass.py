@@ -57,7 +57,7 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.collision()
-        self.orchestrator.fairiesFirstWave()
+        #self.orchestrator.fairiesFirstWave()
 
 
     def collision(self):
